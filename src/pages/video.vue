@@ -28,7 +28,6 @@
                     <el-col>
                       <el-upload ref="upload"
                                  action="#"
-                                 multiple
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
@@ -43,12 +42,14 @@
                                  :auto-upload="false"
                                  >
                         <i v-if="fileList === undefined || fileList.length === 0"
-                           class="el-icon-plus avatar-uploader-icon"></i>
+                           class="el-icon-plus avatar-uploader-icon">选择视频</i>
+
                         <el-progress v-if="videoFlag === true"
                                      type="circle"
                                      :percentage="videoUploadPercent"
                                      style="margin-top:7px;"></el-progress>
                       </el-upload>
+                      <el-button type="primary" @click="uploadData">上传视频</el-button>
                       <el-dialog :visible.sync="dialogVisible" append-to-body>
                         <i class="el-icon-plus"></i>
                       </el-dialog>
@@ -119,7 +120,22 @@ export default {
       this.isShowUploadVideo = false;
     },
     uploadData(){
-
+      const param = new FormData();
+      console.log(this.fileList.length);
+      param.append('file', this.fileList);
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }
+      this.axios.post("http://localhost:8080/api/video", param,config).then(
+        res => {
+          //this.processedVideoList = res.data;
+          console.log("Received video list: " + res);
+        }
+      ).catch(res => {
+        console.log(res)
+      })
     },
     OnChange(file, fileList) {
       const isType = file.type === 'video/mp4'|| 'video/mov'
@@ -136,7 +152,6 @@ export default {
       this.fileList.push(file)
       this.url = file.url
       this.hideUpload = fileList.length >= this.limit
-
     },
     handleRemove(file, fileList) {
       if (file.id) {
