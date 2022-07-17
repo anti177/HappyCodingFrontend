@@ -155,6 +155,7 @@ export default {
       this.videoFlag = false;
       this.videoUploadPercent = 0;
       if(res.code === 200){
+        //TODO: 得到返回的文件，展示到前端视频页面 + summary页面+更新下载链接
         // this.fileList[0].id = res.data.uploadId;
         // this.fileList[0].url = res.data.uploadUrl;
         this.$message({

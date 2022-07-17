@@ -27,27 +27,38 @@
                       </el-carousel>
                     </div>
                   </div>
-                  <el-row style="margin-top: 3%;">
-                    <el-col>
-                        <el-upload ref="upload"
-                                   action="#"
-                                   multiple
-                                   :data="uploadData"
-                                   :limit=10
-                                   :file-list="pictureList"
-                                   list-type="picture-card"
-                                   :on-preview="handlePictureCardPreview"
-                                   :on-change="OnChange"
-                                   :on-remove="handleRemove"
-                                   :on-exceed="handleExceed"
-                                   accept="image/jpeg,image/png"
-                                   :auto-upload="false">
-                          <i class="el-icon-plus"></i>
-                        </el-upload>
-                        <el-dialog :visible.sync="dialogVisible" append-to-body>
-                          <img width="100%" :src="dialogImageUrl" alt="">
-                        </el-dialog>
-                    </el-col>
+                  <el-row>
+
+                      <el-form>
+                        <el-form-item>
+                          <el-upload ref="upload"
+                                     action="http://localhost:8080/api/photo"
+                                     multiple
+                                     :limit=20
+                                     :file-list="fileList"
+                                     list-type="picture-card"
+                                     :on-preview="handlePictureCardPreview"
+                                     :on-change="OnChange"
+                                     :on-remove="handleRemove"
+                                     :on-exceed="handleExceed"
+                                     :on-success="handlePhotoSuccess"
+                                     accept="image/jpeg,image/png"
+                                     :auto-upload="false">
+                            <i class="el-icon-plus"></i>
+                          </el-upload>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-col>
+                            <el-dialog :visible.sync="dialogVisible" append-to-body>
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                            </el-dialog>
+                          </el-col>
+                          <el-col>
+                            <el-button  type="primary" @click="submitUpload(form)" size ='small' round>确认上传<i class="el-icon-upload el-icon--right"></i>
+                          </el-button>
+                          </el-col>
+                        </el-form-item>
+                      </el-form>
                   </el-row>
                 </el-card>
               </el-col>
@@ -180,7 +191,24 @@ export default {
       this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
     //上传图片，返回处理好的文件
-    uploadData(){
+    handlePhotoSuccess(res, file) {
+      if(res.code === 200){
+        //TODO: 得到返回的文件，展示到前端页面 + summary页面+更新下载链接
+        // this.fileList[0].id = res.data.uploadId;
+        // this.fileList[0].url = res.data.uploadUrl;
+        this.$message({
+          message: '上传成功',
+          type: 'success'
+        });
+      }else{
+        this.$message.error('上传失败，请重新上传！');
+      }
+      //前台上传地址
+      //if (file.status == 'success' ) {
+      //    this.videoForm.showVideoPath = file.url;
+      //} else {
+      //     layer.msg("上传失败，请重新上传");
+      //}
 
     },
     handleClose(done) {
@@ -190,7 +218,9 @@ export default {
         })
         .catch(_ => {});
     },
-
+    submitUpload(form){
+      this.$refs.upload.submit();
+    },
     lisChange (index) {
       this.$refs.carousel.setActiveItem(index);
       this.nowId = index;
