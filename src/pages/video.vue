@@ -9,16 +9,14 @@
               <el-col :span='16'>
 
                 <el-card class="box-card" >
-                  <div slot="header" class="clearfix">
+
                     <div class="block">
                       <el-empty v-if="processedVideoList === undefined || processedVideoList.length <= 0" description="waiting for upload">
                       </el-empty>
-
                     </div>
-                  </div>
-                  <el-row style="margin-top: 3%;">
+                  <el-row >
                     <video v-if="processedVideoList !== undefined || processedVideoList.length === 1"
-                           controls="controls">
+                           controls="controls" >
                       <source :src="processedVideoList[0].url"
                               type="video/mp4">
                       您的浏览器不支持视频播放
@@ -27,32 +25,27 @@
                   <el-row>
                     <el-col>
                       <el-upload ref="upload"
-                                 action="#"
+                                 action="http://localhost:8080/api/video"
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
                                  :before-upload="beforeUploadVideo"
-                                 :on-preview="handleVideoCardPreview"
-                                 :on-change="OnChange"
                                  :on-remove="handleRemove"
                                  :on-exceed="handleExceed"
                                  :on-progress="handleOnProgress"
                                  :on-success="handleVideoSuccess"
                                  accept=".mp4"
-                                 :auto-upload="false"
                                  >
-                        <i v-if="fileList === undefined || fileList.length === 0"
-                           class="el-icon-plus avatar-uploader-icon">选择视频</i>
-
+                        <el-button type="primary" icon="el-icon-plus" circle></el-button>
                         <el-progress v-if="videoFlag === true"
                                      type="circle"
                                      :percentage="videoUploadPercent"
                                      style="margin-top:7px;"></el-progress>
+<!--                        <el-button slot="trigger"  type="primary">选取文件</el-button>-->
+<!--                        <el-button style="margin-left: 10px;"  type="success" @click="uploadData">上传到服务器</el-button>-->
+
                       </el-upload>
-                      <el-button type="primary" @click="uploadData">上传视频</el-button>
-                      <el-dialog :visible.sync="dialogVisible" append-to-body>
-                        <i class="el-icon-plus"></i>
-                      </el-dialog>
+
                     </el-col>
                   </el-row>
 
@@ -93,7 +86,7 @@ export default {
       isShowUploadVideo:false,
       pageTitle: 'video',
       dialogVideoUrl: '',
-      dialogVisible: false,
+      dialogVisible: true,
       dialogVisible2:false,
       nowId:0,
       fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
@@ -119,35 +112,20 @@ export default {
       }
       this.isShowUploadVideo = false;
     },
-    uploadData(){
-      const param = new FormData();
-      console.log(this.fileList.length);
-      param.append('file', this.fileList);
-      let config = {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }
-      this.axios.post("http://localhost:8080/api/video", param,config).then(
-        res => {
-          //this.processedVideoList = res.data;
-          console.log("Received video list: " + res);
-        }
-      ).catch(res => {
-        console.log(res)
-      })
-    },
     OnChange(file, fileList) {
-      const isType = file.type === 'video/mp4'|| 'video/mov'
+      if (fileList.length > 1) {
+        fileList.shift();
+      }
+      const isType = file.type === 'video/mp4'
       const isLt5M = file.size / 1024 / 1024 < 5 * 100
 
       if (!isType) {
         this.$message.error('上传格式必须是mp4或者mov!');
-        fileList.pop()
+        return false
       }
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 500MB!');
-        fileList.pop()
+        return false
       }
       this.fileList.push(file)
       this.url = file.url
@@ -160,16 +138,15 @@ export default {
       }
       this.fileList = []
       this.hideUpload = fileList.length >= this.limit
+      this.dialogVisible = true
     },
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
-    handleVideoCardPreview(file) {
-      this.dialogVideoUrl = file.url
-      this.dialogVisible = true
-    },
+
     handleOnProgress(event, file, fileList){
       this.videoFlag = true;
+      this.dialogVisible = false;
       this.videoUploadPercent = file.percentage.toFixed(0)*1;
     },
     //上传成功回调
@@ -177,9 +154,13 @@ export default {
       this.isShowUploadVideo = true;
       this.videoFlag = false;
       this.videoUploadPercent = 0;
-      if(res.status === 200){
-        this.fileList[0].id = res.data.uploadId;
-        this.fileList[0].url = res.data.uploadUrl;
+      if(res.code === 200){
+        // this.fileList[0].id = res.data.uploadId;
+        // this.fileList[0].url = res.data.uploadUrl;
+        this.$message({
+          message: '上传成功',
+          type: 'success'
+        });
       }else{
         this.$message.error('视频上传失败，请重新上传！');
       }
@@ -190,7 +171,6 @@ export default {
       //     layer.msg("上传失败，请重新上传");
       //}
 
-      //后台上传地址
     },
 
     downloadFile(){
