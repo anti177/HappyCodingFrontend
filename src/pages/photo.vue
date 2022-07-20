@@ -63,14 +63,32 @@
                 </el-card>
               </el-col>
               <el-col :span='8'>
-                <el-card class="box-card2" >
+                <el-card class="box-card2" v-if="!(processedPictureList !== undefined && processedPictureList.length !== 0)">
                   <div slot="header" class="clearfix">
-                    <span style="font-size: x-large">summary</span>
+                    <span>Waiting for Analysis</span>
+                  </div>
+                </el-card>
+                <el-card class="box-card2" v-else>
+                  <div v-for="(a,index) in processedPictureList[nowId].summary" :key="a" >
+
+                    <el-row>
+                        <el-card class="box-card">
+                          <el-image
+                            style="width: 80px; height: 80px"
+                            :src="a.img"
+                            :fit="fit"></el-image>
+                            <div >
+                              <el-tag size="small" >age:{{a.age}}</el-tag>
+                              <el-tag size="small" >{{a.emotion}}</el-tag>
+                              <el-tag v-if=a.male size="small" >male</el-tag>
+                              <el-tag v-if=!a.male size="small" >female</el-tag>
+                              <el-tag v-if=a.bearded size="small" >bearded</el-tag>
+                            </div>
+
+                        </el-card>
+                    </el-row>
                   </div>
 
-                   <div v-for="a in processedPictureList[nowId].summary" :key="a" class="text item">
-                     {{a}}
-                   </div>
                 </el-card>
                 <el-col>
                   <el-button type="primary" @click="dialogVisible2 = true" round>save</el-button>
@@ -78,17 +96,11 @@
                     title="提示"
                     :visible.sync="dialogVisible2"
                     width="50%" :before-close="handleClose" append-to-body>
-
-<!--                    <div v-for="b in processedPictureList" :key="b.id" class="text item">-->
-<!--                      <el-card>-->
-<!--                        <img v-bind:src="b.url" class="img" @click="">-->
-<!--                      </el-card>-->
-<!--                    </div>-->
                     <el-checkbox-group v-model="checkList">
                       <div v-for="a in processedPictureList" :key="a.id" class="text item">
                         <el-card>
                           <el-checkbox :label="a.id + 1"></el-checkbox>
-                          <img v-bind:src="a.url" class="img" @click="">
+                          <img :src="a.url" class="img" @click="" alt="">
                         </el-card>
                       </div>
                     </el-checkbox-group>
@@ -140,18 +152,15 @@ export default {
       fileList:[],
       checkList:[],
       processedPictureList:[
-        { url:require('../../static/pic/test.png'),
-          summary:['face:50%','age:20-30'],
-          url2:'/static/pic/test.png',
-          id:0},
-        { url:require('../../static/pic/test.png'),
-          summary:['face:100%','age:10-30'],
-          url2:'/static/pic/test.png',
-          id:1},
+        // { url:require('../../static/pic/test.png'),
+        //   summary:['face:50%','age:20-30'],
+        //   url2:'/static/pic/test.png',
+        //   id:0},
+        // { url:require('../../static/pic/test.png'),
+        //   summary:['face:100%','age:10-30'],
+        //   url2:'/static/pic/test.png',
+        //   id:1},
       ],
-      imgInfoList: [], //包含图片的id,name,size的集合
-      imgNameList: [], //后端返回的上传图片的name集合，传到后端
-      imgSize: [], //后端返回的上传图片的imgSize集合，传到后端
       deleteImgFileList: [] //存已被删除了的图片的id
     }
   },
@@ -192,10 +201,19 @@ export default {
     },
     //上传图片，返回处理好的文件
     handlePhotoSuccess(res, file) {
+      console.log("I'm here:"+ res)
+      console.log(res.code)
       if(res.code === 200){
-        //TODO: 得到返回的文件，展示到前端页面 + summary页面+更新下载链接
-        // this.fileList[0].id = res.data.uploadId;
-        // this.fileList[0].url = res.data.uploadUrl;
+        console.log("I'm here:"+ res)
+        const len = this.processedPictureList.length
+        const newFile = {
+          id: len,
+          url: "data:image/png;base64," + res.img,
+          summary: res.faceDetails
+        };
+        this.processedPictureList.push(newFile)
+        this.nowId = this.processedPictureList.length-1
+
         this.$message({
           message: '上传成功',
           type: 'success'
@@ -203,12 +221,6 @@ export default {
       }else{
         this.$message.error('上传失败，请重新上传！');
       }
-      //前台上传地址
-      //if (file.status == 'success' ) {
-      //    this.videoForm.showVideoPath = file.url;
-      //} else {
-      //     layer.msg("上传失败，请重新上传");
-      //}
 
     },
     handleClose(done) {
@@ -220,28 +232,48 @@ export default {
     },
     submitUpload(form){
       this.$refs.upload.submit();
+      this.pictureList = this.fileList();
+      this.fileList = [];
     },
+
     lisChange (index) {
       this.$refs.carousel.setActiveItem(index);
       this.nowId = index;
     },
     downloadFile(){
       const that = this;
-      // const baseURL = 'file:///Users/yangyixin/PycharmProjects/front/frontend/src/pages'
-      for(let i = 0; i<that.checkList.length; i++){  //循环遍历调用downloadFile方法
+      for(let i = 0; i<that.checkList.length; i++){
         // const str = that.processedPictureList[that.checkList[i]-1].url2;
         //const url = that.pictureList[that.checkList[i]-1];
         //downloadFile(url);
-        const url = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg';
-        fetch(url).then(res => res.blob().then(blob => {
-          const a = document.createElement('a');
-          const url = window.URL.createObjectURL(blob);
-          const filename = name || 'qrcode.jpg';
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        }));
+        //const url = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg';
+        const url = that.processedPictureList[that.checkList[i]-1].url;
+        // fetch(url).then(res => res.blob().then(blob => {
+        //   const a = document.createElement('a');
+        //   const url = window.URL.createObjectURL(blob);
+        //   const filename = name || 'i.png';
+        //   a.href = url;
+        //   a.download = filename;
+        //   a.click();
+        //   window.URL.revokeObjectURL(url);
+        // }));
+        // 如果浏览器支持msSaveOrOpenBlob方法（也就是使用IE浏览器的时候），那么调用该方法去下载图片
+        if (window.navigator.msSaveOrOpenBlob) {
+          var bstr = atob(url.split(',')[1])
+          var n = bstr.length
+          var u8arr = new Uint8Array(n)
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+          }
+          var blob = new Blob([u8arr])
+          window.navigator.msSaveOrOpenBlob(blob, 'chart-download' + '.' + 'png')
+        } else {
+          // 这里就按照chrome等新版浏览器来处理
+          const a = document.createElement('a')
+          a.href = url
+          a.setAttribute('download', 'chart-download')
+          a.click()
+        }
       }
       this.dialogVisible2 = false;
 
@@ -313,7 +345,6 @@ html, body {
 .clearfix:after {
   clear: both
 }
-
 .box-card {
   margin-left: 5%;
   position: center;
@@ -339,15 +370,27 @@ html, body {
   margin: 0;
 }
 
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
-}
 img {
   max-width: 100%;
   max-height: 100%;
+}
+ .time {
+   font-size: 13px;
+   color: #999;
+ }
+
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both
 }
 </style>
