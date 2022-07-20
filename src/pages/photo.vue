@@ -1,13 +1,23 @@
 <template>
   <div class="building">
     <el-container>
-      <el-header class="top">LOGO</el-header>
+
+      <el-header class="top">
+        <el-row>
+          <el-col :span="1" >
+            <el-button @click="goBack"  type="text">back</el-button>
+          </el-col>
+          <el-col :span="23">
+            <p>EMOJI-CAM</p>
+          </el-col>
+        </el-row>
+
+      </el-header>
       <el-container>
         <el-container>
-          <el-main class="middle">
+          <el-main class="middle" v-loading="loading">
             <el-row gutter="6">
               <el-col :span='16'>
-
                 <el-card class="box-card" >
                   <div slot="header" class="clearfix">
                     <div class="block">
@@ -42,6 +52,8 @@
                                      :on-remove="handleRemove"
                                      :on-exceed="handleExceed"
                                      :on-success="handlePhotoSuccess"
+                                     :on-progress="OnProgress"
+                                     :on-error="handleOnError"
                                      accept="image/jpeg,image/png"
                                      :auto-upload="false">
                             <i class="el-icon-plus"></i>
@@ -54,7 +66,7 @@
                             </el-dialog>
                           </el-col>
                           <el-col>
-                            <el-button  type="primary" @click="submitUpload(form)" size ='small' round>确认上传<i class="el-icon-upload el-icon--right"></i>
+                            <el-button  type="primary" @click="submitUpload(form)" size ='small' round>confirm upload<i class="el-icon-upload el-icon--right"></i>
                           </el-button>
                           </el-col>
                         </el-form-item>
@@ -65,7 +77,7 @@
               <el-col :span='8'>
                 <el-card class="box-card2" v-if="!(processedPictureList !== undefined && processedPictureList.length !== 0)">
                   <div slot="header" class="clearfix">
-                    <span>Waiting for Analysis</span>
+                    <p style="font-size: small">Waiting for Analysis</p>
                   </div>
                 </el-card>
                 <el-card class="box-card2" v-else>
@@ -73,17 +85,27 @@
 
                     <el-row>
                         <el-card class="box-card">
-                          <el-image
-                            style="width: 80px; height: 80px"
-                            :src="a.img"
-                            :fit="fit"></el-image>
-                            <div >
-                              <el-tag size="small" >age:{{a.age}}</el-tag>
-                              <el-tag size="small" >{{a.emotion}}</el-tag>
-                              <el-tag v-if=a.male size="small" >male</el-tag>
-                              <el-tag v-if=!a.male size="small" >female</el-tag>
-                              <el-tag v-if=a.bearded size="small" >bearded</el-tag>
-                            </div>
+                          <div class="golf">
+                            <el-row>
+                              <div class="photo">
+                                <el-image
+                                  :src="a.img"
+                                  :fit="cover"></el-image>
+                              </div>
+                              <div class="intro">
+                                <el-card style="text-align: left" class="el-card3">
+                                  <p>age: about {{a.age}}</p>
+                                  <p>emotion: {{a.emotion}}</p>
+                                  <el-tag v-if=a.male size="medium" >male</el-tag>
+                                  <el-tag v-if=!a.male size="medium" >female</el-tag>
+                                  <el-tag v-if=a.bearded size="medium" >bearded</el-tag>
+                                  <el-tag v-if=!a.bearded size="medium" >non-bearded</el-tag>
+
+                                </el-card>
+
+                              </div>
+                            </el-row>
+                          </div>
 
                         </el-card>
                     </el-row>
@@ -161,13 +183,20 @@ export default {
         //   url2:'/static/pic/test.png',
         //   id:1},
       ],
-      deleteImgFileList: [] //存已被删除了的图片的id
+      deleteImgFileList: [],//存已被删除了的图片的id
+      loading:false
     }
   },
   methods: {
+    goBack(){
+      this.$router.push("/");
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
+    },
+    OnProgress(event, file, fileList){
+       this.loading = true;
     },
     OnChange(file, fileList) {
       const isType = file.type === 'image/jpeg' || 'image/png'
@@ -187,12 +216,16 @@ export default {
     },
     //删除图片时
     handleRemove(file, fileList) {
+      console.log(fileList.length)
+      console.log(this.pictureList.length)
+      this.$refs.upload.handleRemove(file)
       if (file.id) {
         console.log('删除了已被上传过的图片')
         console.log(file.id)
         this.deleteImgFileList.push(file.id)
       }
       this.pictureList = fileList
+      this.fileList = fileList
       this.hideUpload = fileList.length >= this.limit
     },
     //文件超出个数限制时
@@ -200,7 +233,12 @@ export default {
       this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
     //上传图片，返回处理好的文件
+    handleOnError(err, file, fileList){
+      this.loading = false;
+      this.$message.error('sorry something wrong please try again！');
+    },
     handlePhotoSuccess(res, file) {
+      this.loading = false;
       console.log("I'm here:"+ res)
       console.log(res.code)
       if(res.code === 200){
@@ -215,11 +253,11 @@ export default {
         this.nowId = this.processedPictureList.length-1
 
         this.$message({
-          message: '上传成功',
+          message: 'upload success',
           type: 'success'
         });
       }else{
-        this.$message.error('上传失败，请重新上传！');
+        this.$message.error('sorry something wrong please try again！');
       }
 
     },
@@ -369,15 +407,14 @@ html, body {
   line-height: 150px;
   margin: 0;
 }
+.el-card3{
+  background-color: #f6dfcb;
+}
 
 img {
   max-width: 100%;
   max-height: 100%;
 }
- .time {
-   font-size: 13px;
-   color: #999;
- }
 
 .bottom {
   margin-top: 13px;
@@ -393,4 +430,13 @@ img {
 .clearfix:after {
   clear: both
 }
+
+.photo{
+  float:left;
+}
+.intro{
+  float:right;
+  font-size: large;
+}
+
 </style>
