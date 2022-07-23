@@ -68,8 +68,8 @@
             </el-row>
 
           </el-main>
-          <el-footer class="bottom">Copyright © 2022 HAPPY CODING</el-footer>
         </el-container>
+        <el-footer class="bottom">Copyright © 2022 HAPPY CODING</el-footer>
       </el-container>
     </el-container>
   </div>

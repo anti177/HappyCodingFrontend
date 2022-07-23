@@ -18,10 +18,11 @@
           <el-main class="middle" v-loading="loading">
             <el-row gutter="6">
               <el-col :span='16'>
-                <el-card class="box-card" >
+                <el-card class="box-card">
                   <div slot="header" class="clearfix">
                     <div class="block">
-                      <el-empty v-if="processedPictureList === undefined || processedPictureList.length <= 0" description="waiting for upload">
+                      <el-empty v-if="processedPictureList === undefined || processedPictureList.length <= 0"
+                                description="waiting for upload">
                       </el-empty>
                       <el-carousel v-if="processedPictureList !==undefined && processedPictureList.length > 0"
                                    ref="carousel"
@@ -39,75 +40,86 @@
                   </div>
                   <el-row>
 
-                      <el-form>
-                        <el-form-item>
-                          <el-upload ref="upload"
-                                     action="http://localhost:8080/api/photo"
-                                     multiple
-                                     :limit=20
-                                     :file-list="fileList"
-                                     list-type="picture-card"
-                                     :on-preview="handlePictureCardPreview"
-                                     :on-change="OnChange"
-                                     :on-remove="handleRemove"
-                                     :on-exceed="handleExceed"
-                                     :on-success="handlePhotoSuccess"
-                                     :on-progress="OnProgress"
-                                     :on-error="handleOnError"
-                                     accept="image/jpeg,image/png"
-                                     :auto-upload="false">
-                            <i class="el-icon-plus"></i>
-                          </el-upload>
-                        </el-form-item>
-                        <el-form-item>
-                          <el-col>
-                            <el-dialog :visible.sync="dialogVisible" append-to-body>
+                    <el-form>
+                      <el-form-item>
+                        <el-upload ref="upload"
+                                   action="http://localhost:8080/api/photo"
+                                   multiple
+                                   :limit=20
+                                   :file-list="fileList"
+                                   list-type="picture-card"
+                                   :on-preview="handlePictureCardPreview"
+                                   :on-change="OnChange"
+                                   :on-remove="handleRemove"
+                                   :on-exceed="handleExceed"
+                                   :on-success="handlePhotoSuccess"
+                                   :on-progress="OnProgress"
+                                   :on-error="handleOnError"
+                                   accept="image/jpeg,image/png"
+                                   :auto-upload="false">
+                          <i class="el-icon-plus"></i>
+                        </el-upload>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-col>
+                          <el-dialog :visible.sync="dialogVisible" append-to-body>
                             <img width="100%" :src="dialogImageUrl" alt="">
-                            </el-dialog>
-                          </el-col>
-                          <el-col>
-                            <el-button  type="primary" @click="submitUpload(form)" size ='small' round>confirm upload<i class="el-icon-upload el-icon--right"></i>
+                          </el-dialog>
+                        </el-col>
+                        <el-col>
+                          <el-button type="primary" @click="submitUpload(form)" size='small' round>confirm upload<i
+                            class="el-icon-upload el-icon--right"></i>
                           </el-button>
-                          </el-col>
-                        </el-form-item>
-                      </el-form>
+                        </el-col>
+                      </el-form-item>
+                    </el-form>
                   </el-row>
                 </el-card>
               </el-col>
               <el-col :span='8'>
-                <el-card class="box-card2" v-if="!(processedPictureList !== undefined && processedPictureList.length !== 0)">
+                <el-card class="box-card2"
+                         v-if="!(processedPictureList !== undefined && processedPictureList.length !== 0)">
                   <div slot="header" class="clearfix">
                     <p style="font-size: small">Waiting for Analysis</p>
+
                   </div>
                 </el-card>
                 <el-card class="box-card2" v-else>
-                  <div v-for="(a,index) in processedPictureList[nowId].summary" :key="a" >
+
+                  <div v-for="(a,index) in processedPictureList[nowId].summary" :key="a">
 
                     <el-row>
-                        <el-card class="box-card">
-                          <div class="golf">
-                            <el-row>
-                              <div class="photo">
-                                <el-image
-                                  :src="a.img"
-                                  :fit="cover"></el-image>
-                              </div>
-                              <div class="intro">
-                                <el-card style="text-align: left" class="el-card3">
-                                  <p>age: about {{a.age}}</p>
-                                  <p>emotion: {{a.emotion}}</p>
-                                  <el-tag v-if=a.male size="medium" >male</el-tag>
-                                  <el-tag v-if=!a.male size="medium" >female</el-tag>
-                                  <el-tag v-if=a.bearded size="medium" >bearded</el-tag>
-                                  <el-tag v-if=!a.bearded size="medium" >non-bearded</el-tag>
+                      <el-card class="box-card">
+                        <div class="golf">
+                          <el-row>
+                            <div class="photo">
+                              <el-image
+                                :src="a.img"
+                                :fit="cover"></el-image>
+                            </div>
+                            <div class="intro">
+                              <el-card style="text-align: left" class="el-card3">
+                                <p>age: about {{ a.age }}</p>
+                                <p>happy: {{ a.happy }}%</p>
+                                <p>fear: {{ a.fear }}%</p>
+                                <p>sad: {{ a.sad }}%</p>
+                                <p>calm: {{ a.calm }}%</p>
+                                <p>surprised: {{ a.surprised}}%</p>
+                                <p>disgusted: {{ a.disgusted }}%</p>
+                                <p>confused: {{ a.confused }}%</p>
+                                <p>angry: {{ a.angry }}%</p>
 
-                                </el-card>
 
-                              </div>
-                            </el-row>
-                          </div>
+                                <el-tag v-if=a.male size="medium">male</el-tag>
+                                <el-tag v-if=!a.male size="medium">female</el-tag>
+                                <el-tag v-if=a.bearded size="medium">bearded</el-tag>
+                                <el-tag v-if=!a.bearded size="medium">non-bearded</el-tag>
+                              </el-card>
+                            </div>
+                          </el-row>
+                        </div>
 
-                        </el-card>
+                      </el-card>
                     </el-row>
                   </div>
 
@@ -138,7 +150,9 @@
             </el-row>
 
           </el-main>
-          <el-footer class="bottom">Copyright © 2022 HAPPY CODING</el-footer>
+          <el-footer class="bottom">
+            Copyright © 2022 HAPPY CODING
+          </el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -146,6 +160,7 @@
 </template>
 
 <script>
+
 export const downloadFile = (url) => {
   const iframe = document.createElement("iframe");
   iframe.style.display = "none";  // 防止影响页面
@@ -153,7 +168,7 @@ export const downloadFile = (url) => {
   iframe.src = url;
   document.body.appendChild(iframe);  // 这一行必须，iframe挂在到dom树上才会发请求
   // 5分钟之后删除（onload方法对于下载链接不起作用，就先抠脚一下吧）
-  setTimeout(()=>{
+  setTimeout(() => {
     iframe.remove();
   }, 5 * 60 * 1000);
 }
@@ -166,14 +181,14 @@ export default {
       pageTitle: 'photo',
       dialogImageUrl: '',
       dialogVisible: false,
-      dialogVisible2:false,
-      nowId:0,
+      dialogVisible2: false,
+      nowId: 0,
       fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
       /*pictureList:['https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'],*/
-      pictureList:[],
-      fileList:[],
-      checkList:[],
-      processedPictureList:[
+      pictureList: [],
+      fileList: [],
+      checkList: [],
+      processedPictureList: [
         // { url:require('../../static/pic/test.png'),
         //   summary:['face:50%','age:20-30'],
         //   url2:'/static/pic/test.png',
@@ -184,32 +199,37 @@ export default {
         //   id:1},
       ],
       deleteImgFileList: [],//存已被删除了的图片的id
-      loading:false
+      loading: false
     }
   },
   methods: {
-    goBack(){
+    goBack() {
       this.$router.push("/");
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    OnProgress(event, file, fileList){
-       this.loading = true;
+    OnProgress(event, file, fileList) {
+      this.loading = true;
     },
     OnChange(file, fileList) {
-      const isType = file.type === 'image/jpeg' || 'image/png'
-      const isLt5M = file.size / 1024 / 1024 < 5
+      if (file.status !== "ready") return
 
-      if (!isType) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
-        fileList.pop()
+      let errMsg = void (0)
+      if (!file.name.endsWith(".png")) {
+        errMsg = "Upload avatar pictures can only be in PNG format!"
+      } else if (file.size > 5 * 1024 * 1024) {
+        errMsg = "The size of uploaded avatar image cannot exceed 5MB!"
       }
-      if (!isLt5M) {
-        this.$message.error('上传头像图片大小不能超过 5MB!');
+
+      if (errMsg) {
+        this.$message.error(errMsg)
         fileList.pop()
+        return
       }
+
+      this.pictureList.push(file)
       this.pictureList.push(file)
       this.hideUpload = fileList.length >= this.limit
 
@@ -218,31 +238,38 @@ export default {
     handleRemove(file, fileList) {
       console.log(fileList.length)
       console.log(this.pictureList.length)
-      this.$refs.upload.handleRemove(file)
+      //this.$refs.upload.handleRemove(file)
       if (file.id) {
+        for (var i = 0; i < fileList.length; i++) {
+          if (fileList[i] === file) {
+            fileList.splice(i, 1);
+          }
+        }
         console.log('删除了已被上传过的图片')
         console.log(file.id)
         this.deleteImgFileList.push(file.id)
       }
       this.pictureList = fileList
       this.fileList = fileList
-      this.hideUpload = fileList.length >= this.limit
+
+      console.log(fileList.length)
+      console.log(this.pictureList.length)
     },
     //文件超出个数限制时
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
     //上传图片，返回处理好的文件
-    handleOnError(err, file, fileList){
+    handleOnError(err, file, fileList) {
       this.loading = false;
       this.$message.error('sorry something wrong please try again！');
     },
     handlePhotoSuccess(res, file) {
       this.loading = false;
-      console.log("I'm here:"+ res)
+      console.log("I'm here:" + res)
       console.log(res.code)
-      if(res.code === 200){
-        console.log("I'm here:"+ res)
+      if (res.code === 200) {
+        console.log("I'm here:" + res)
         const len = this.processedPictureList.length
         const newFile = {
           id: len,
@@ -250,13 +277,12 @@ export default {
           summary: res.faceDetails
         };
         this.processedPictureList.push(newFile)
-        this.nowId = this.processedPictureList.length-1
-
+        this.nowId = this.processedPictureList.length - 1
         this.$message({
           message: 'upload success',
           type: 'success'
         });
-      }else{
+      } else {
         this.$message.error('sorry something wrong please try again！');
       }
 
@@ -266,26 +292,27 @@ export default {
         .then(_ => {
           done();
         })
-        .catch(_ => {});
+        .catch(_ => {
+        });
     },
-    submitUpload(form){
+    submitUpload(form) {
       this.$refs.upload.submit();
       this.pictureList = this.fileList();
       this.fileList = [];
     },
 
-    lisChange (index) {
+    lisChange(index) {
       this.$refs.carousel.setActiveItem(index);
       this.nowId = index;
     },
-    downloadFile(){
+    downloadFile() {
       const that = this;
-      for(let i = 0; i<that.checkList.length; i++){
+      for (let i = 0; i < that.checkList.length; i++) {
         // const str = that.processedPictureList[that.checkList[i]-1].url2;
         //const url = that.pictureList[that.checkList[i]-1];
         //downloadFile(url);
         //const url = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg';
-        const url = that.processedPictureList[that.checkList[i]-1].url;
+        const url = that.processedPictureList[that.checkList[i] - 1].url;
         // fetch(url).then(res => res.blob().then(blob => {
         //   const a = document.createElement('a');
         //   const url = window.URL.createObjectURL(blob);
@@ -314,23 +341,23 @@ export default {
         }
       }
       this.dialogVisible2 = false;
-
-    }
+    },
 
   }
 }
 </script>
 
 <style scoped>
-.building{
-  width:100%;
+.building {
+  width: 100%;
   height: 100%;
   position: fixed;
   background-size: 100% 100%;
   /*background: black url("../components/pic/img.png") center no-repeat local;*/
   background: navajowhite;
-  top:0px;
+
 }
+
 #word-img {
 }
 
@@ -338,17 +365,20 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 html, body {
   width: 100%;
   height: 100%;
 }
+
 .top {
   width: 100%;
   height: 70px;
-  background-color: #f6dfcb;
+  background-color: #f6b99e;
   font-size: 30px;
   line-height: 70px;
 }
+
 .middle {
   position: absolute;
   top: 70px;
@@ -358,6 +388,7 @@ html, body {
   font-size: 70px;
   text-align: center;
 }
+
 .bottom {
   position: absolute;
   bottom: 0;
@@ -366,7 +397,9 @@ html, body {
   line-height: 40px; /*行高与高度相等，内容垂直居中*/
   background-color: #f6b99e;
   text-align: center;
+
 }
+
 .text {
   font-size: 14px;
 }
@@ -380,26 +413,30 @@ html, body {
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both
 }
+
 .box-card {
   margin-left: 5%;
   position: center;
   offset: center;
   background-color: transparent;
-  overflow-y:auto
+  overflow-y: auto
 
 }
+
 .box-card2 {
   margin-right: 5%;
 
   position: center;
   offset: center;
   background-color: transparent;
-  overflow-y:auto
+  overflow-y: auto
 
 }
+
 .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
@@ -407,18 +444,14 @@ html, body {
   line-height: 150px;
   margin: 0;
 }
-.el-card3{
+
+.el-card3 {
   background-color: #f6dfcb;
 }
 
 img {
   max-width: 100%;
   max-height: 100%;
-}
-
-.bottom {
-  margin-top: 13px;
-  line-height: 12px;
 }
 
 .clearfix:before,
@@ -431,11 +464,12 @@ img {
   clear: both
 }
 
-.photo{
-  float:left;
+.photo {
+  float: left;
 }
-.intro{
-  float:right;
+
+.intro {
+  float: right;
   font-size: large;
 }
 
