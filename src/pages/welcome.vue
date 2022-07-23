@@ -1,32 +1,7 @@
 <template>
 <div class="building">
-
-
-<!--  <div class="top">LOGO</div>-->
-<!--  <div class="middle">-->
-
-<!--    <el-row>-->
-<!--      <div id="word-img">-->
-<!--        <el-image :src="require('../components/pic/1.png')">-->
-<!--          <div slot="error" class="image-slot">-->
-<!--            <i class="el-icon-picture-outline"></i>-->
-<!--          </div>-->
-<!--        </el-image>-->
-<!--      </div>-->
-<!--    </el-row>-->
-<!--    <el-row>-->
-<!--      <el-col :span='24'><h3 style="font-size: 15px">Emotion recognition system with emoji replacement face function</h3></el-col>-->
-<!--    </el-row>-->
-<!--    <el-row :gutter="6">-->
-<!--        <el-button type="primary" @click="video" round>video</el-button>-->
-<!--        <el-button type="primary" @click="photo" round>photo</el-button>-->
-<!--    </el-row>-->
-
-<!--  </div>-->
-<!--  <div class="bottom">Copyright © 2022 HAPPY CODING</div>-->
-
   <el-container>
-    <el-header class="top">LOGO</el-header>
+    <el-header class="top">EMOJI-CAM</el-header>
     <el-container>
       <el-container>
         <el-main class="middle">

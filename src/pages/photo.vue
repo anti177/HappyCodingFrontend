@@ -1,7 +1,6 @@
 <template>
   <div class="building">
     <el-container>
-
       <el-header class="top">
         <el-row>
           <el-col :span="1" >
