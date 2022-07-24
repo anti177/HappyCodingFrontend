@@ -15,7 +15,7 @@
       <el-container>
         <el-container>
           <el-main class="middle" v-loading="loading">
-            <el-row gutter="6">
+            <el-row >
               <el-col :span='16'>
                 <el-card class="box-card">
                   <div slot="header" class="clearfix">
@@ -54,7 +54,7 @@
                                    :on-success="handlePhotoSuccess"
                                    :on-progress="OnProgress"
                                    :on-error="handleOnError"
-                                   accept="image/jpeg,image/png"
+                                   accept="image/png"
                                    :auto-upload="false">
                           <i class="el-icon-plus"></i>
                         </el-upload>
@@ -287,7 +287,7 @@ export default {
 
     },
     handleClose(done) {
-      this.$confirm('确认关闭？')
+      this.$confirm('sure to close？')
         .then(_ => {
           done();
         })
@@ -357,8 +357,6 @@ export default {
 
 }
 
-#word-img {
-}
 
 * {
   margin: 0;
