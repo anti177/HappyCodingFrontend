@@ -3,8 +3,8 @@
     <el-container>
       <el-header class="top">
         <el-row>
-          <el-col :span="1" >
-            <el-button @click="goBack"  type="text">back</el-button>
+          <el-col :span="1">
+            <el-button @click="goBack" type="text">back</el-button>
           </el-col>
           <el-col :span="23">
             <p>EMOJI-CAM</p>
@@ -15,18 +15,19 @@
       <el-container>
         <el-container>
           <el-main class="middle" v-loading="loading">
-            <el-row >
+            <el-row>
               <el-col :span='16'>
 
-                <el-card class="box-card" >
+                <el-card class="box-card">
 
-                    <div class="block">
-                      <el-empty v-if="processedVideoList === undefined || processedVideoList.length !== 1" description="waiting for upload">
-                      </el-empty>
-                    </div>
-                  <el-row >
+                  <div class="block">
+                    <el-empty v-if="processedVideoList === undefined || processedVideoList.length !== 1"
+                              description="waiting for upload">
+                    </el-empty>
+                  </div>
+                  <el-row>
                     <video v-if="processedVideoList !== undefined && processedVideoList.length === 1"
-                           controls="controls" >
+                           controls="controls">
                       <source :src="processedVideoList[0].url"
                               type="video/mp4">
                       Your browser does not support video playback
@@ -46,14 +47,14 @@
                                  :on-success="handleVideoSuccess"
                                  :on-error="handleOnError"
                                  accept=".mp4"
-                                 >
+                      >
                         <el-button type="primary" icon="el-icon-plus" circle></el-button>
                         <el-progress v-if="videoFlag === true"
                                      type="circle"
                                      :percentage="videoUploadPercent"
                                      style="margin-top:7px;"></el-progress>
-<!--                        <el-button slot="trigger"  type="primary">选取文件</el-button>-->
-<!--                        <el-button style="margin-left: 10px;"  type="success" @click="uploadData">上传到服务器</el-button>-->
+                        <!--                        <el-button slot="trigger"  type="primary">选取文件</el-button>-->
+                        <!--                        <el-button style="margin-left: 10px;"  type="success" @click="uploadData">上传到服务器</el-button>-->
 
                       </el-upload>
 
@@ -90,7 +91,7 @@
                                 <p>fear: {{ a.fear }}%</p>
                                 <p>sad: {{ a.sad }}%</p>
                                 <p>calm: {{ a.calm }}%</p>
-                                <p>surprised: {{ a.surprised}}%</p>
+                                <p>surprised: {{ a.surprised }}%</p>
                                 <p>disgusted: {{ a.disgusted }}%</p>
                                 <p>confused: {{ a.confused }}%</p>
                                 <p>angry: {{ a.angry }}%</p>
@@ -130,22 +131,22 @@ export default {
   name: 'video.vue',
   data() {
     return {
-      url:"",
-      videoFlag:false,
-      videoUploadPercent:0,
-      isShowUploadVideo:false,
+      url: "",
+      videoFlag: false,
+      videoUploadPercent: 0,
+      isShowUploadVideo: false,
       pageTitle: 'video',
       dialogVideoUrl: '',
       dialogVisible: true,
-      dialogVisible2:false,
-      nowId:0,
+      dialogVisible2: false,
+      nowId: 0,
       fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
-      fileList:[],
-      processedVideoList:[
-        { url:'http://vjs.zencdn.net/v/oceans.mp4',
-          summary:['face:50%','age:20-30'],
-          url2:'/static/pic/test.png',
-          id:0},
+      fileList: [],
+      processedVideoList: [
+        // { url:'http://vjs.zencdn.net/v/oceans.mp4',
+        //   summary:['face:50%','age:20-30'],
+        //   url2:'/static/pic/test.png',
+        //   id:0},
       ],
       loading: false
     }
@@ -155,7 +156,7 @@ export default {
       this.$router.push("/");
     },
     beforeUploadVideo(file) {
-      let fileSize = file.size / 1024 / 1024 < 50*10;
+      let fileSize = file.size / 1024 / 1024 < 50 * 10;
       if (['video/mp4'].indexOf(file.type) === -1) {
         this.$message.warning("Please upload the correct video format (mp4 only)");
         return false;
@@ -201,11 +202,11 @@ export default {
       this.loading = false;
       this.$message.error('sorry something wrong please try again！');
     },
-    handleOnProgress(event, file, fileList){
+    handleOnProgress(event, file, fileList) {
       this.videoFlag = true;
       this.dialogVisible = false;
       this.loading = true;
-      this.videoUploadPercent = file.percentage.toFixed(0)*1;
+      this.videoUploadPercent = file.percentage.toFixed(0) * 1;
     },
     //上传成功回调
     handleVideoSuccess(res, file) {
@@ -213,7 +214,7 @@ export default {
       this.videoFlag = false;
       this.videoUploadPercent = 0;
       this.loading = false;
-      if(res.code === 200){
+      if (res.code === 200) {
         //TODO: 得到返回的文件，展示到前端视频页面 + summary页面+更新下载链接
         // this.fileList[0].id = res.data.uploadId;
         // this.fileList[0].url = res.data.uploadUrl;
@@ -222,7 +223,14 @@ export default {
           type: 'success'
         });
         this.url = res.url;
-      }else{
+        this.processedVideoList.push(
+          {
+            url: res.url,
+            summary: ['face:50%', 'age:20-30'],
+            id: 0
+          },
+        )
+      } else {
         this.$message.error('sorry something wrong please try again！');
       }
       //前台上传地址
@@ -234,26 +242,26 @@ export default {
 
     },
 
-    downloadFile(){
+    downloadFile() {
       //const url = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg';
       const url = this.url;
-    //   fetch(url,{
-    //     mode: 'no-cors'}).then(res => res.blob().then(blob => {
-    //     const a = document.createElement('a');
-    //       const url = window.URL.createObjectURL(blob);
-    //       const filename = name || 'm1.mp4';
-    //       a.href = url;
-    //       a.download = filename;
-    //       a.click();
-    //       window.URL.revokeObjectURL(url);
-    //     }));
-    //   let blob=new Blob([data.Body], {type: data.ContentType});
-    //   let link=document.createElement('a');
-    //   link.href=window.URL.createObjectURL(blob);
-    //   link.download=url;
-    //   link.click();
+      //   fetch(url,{
+      //     mode: 'no-cors'}).then(res => res.blob().then(blob => {
+      //     const a = document.createElement('a');
+      //       const url = window.URL.createObjectURL(blob);
+      //       const filename = name || 'm1.mp4';
+      //       a.href = url;
+      //       a.download = filename;
+      //       a.click();
+      //       window.URL.revokeObjectURL(url);
+      //     }));
+      //   let blob=new Blob([data.Body], {type: data.ContentType});
+      //   let link=document.createElement('a');
+      //   link.href=window.URL.createObjectURL(blob);
+      //   link.download=url;
+      //   link.click();
       window.location.href = url
-     }
+    }
 
 
   }
@@ -261,15 +269,16 @@ export default {
 </script>
 
 <style scoped>
-.building{
-  width:100%;
+.building {
+  width: 100%;
   height: 100%;
   position: fixed;
   background-size: 100% 100%;
   /*background: black url("../components/pic/img.png") center no-repeat local;*/
   background: navajowhite;
-  top:0px;
+  top: 0px;
 }
+
 #word-img {
 }
 
@@ -277,10 +286,12 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 html, body {
   width: 100%;
   height: 100%;
 }
+
 .top {
   width: 100%;
   height: 70px;
@@ -288,6 +299,7 @@ html, body {
   font-size: 30px;
   line-height: 70px;
 }
+
 .middle {
   position: absolute;
   top: 70px;
@@ -297,6 +309,7 @@ html, body {
   font-size: 70px;
   text-align: center;
 }
+
 .bottom {
   position: absolute;
   bottom: 0;
@@ -306,6 +319,7 @@ html, body {
   background-color: #f6b99e;
   text-align: center;
 }
+
 .text {
   font-size: 14px;
 }
@@ -319,6 +333,7 @@ html, body {
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both
 }
@@ -328,18 +343,20 @@ html, body {
   position: center;
   offset: center;
   background-color: transparent;
-  overflow-y:auto
+  overflow-y: auto
 
 }
+
 .box-card2 {
   margin-right: 5%;
 
   position: center;
   offset: center;
   background-color: transparent;
-  overflow-y:auto
+  overflow-y: auto
 
 }
+
 .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
@@ -355,17 +372,21 @@ html, body {
 .el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
 }
+
 img {
   max-width: 100%;
   max-height: 100%;
 }
+
 .intro {
   float: right;
   font-size: large;
 }
+
 .photo {
   float: left;
 }
+
 .el-card3 {
   background-color: #f6dfcb;
 }

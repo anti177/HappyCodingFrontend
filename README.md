@@ -4,11 +4,13 @@
 
 ## Build Setup
 
-``` bash
 请确保已经安装好了node js 环境，可参考nodejs官网进行安装。
-  npm install -g vue-cli
-  npm i element-ui -S
-  npm install --save axios
+
+``` bash
+npm install -g vue-cli
+npm i element-ui -S
+npm install --save axios
+
 # install dependencies
 npm install
 
