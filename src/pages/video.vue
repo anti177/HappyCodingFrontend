@@ -35,7 +35,7 @@
                   <el-row>
                     <el-col>
                       <el-upload ref="upload"
-                                 action="http://localhost:8080/api/video"
+                                 action="http://172.31.94.181:5233/video"
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
