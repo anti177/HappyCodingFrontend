@@ -36,7 +36,7 @@
                   <el-row>
                     <el-col>
                       <el-upload ref="upload"
-                                 action="http://localhost:8080/api/video"
+                                 action="http://44.204.27.130:8080/api/video"
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
@@ -79,11 +79,6 @@
                       <el-card class="box-card">
                         <div class="golf">
                           <el-row>
-                            <div class="photo">
-                              <el-image
-                                :src="a.img"
-                                :fit="cover"></el-image>
-                            </div>
                             <div class="intro">
                               <el-card style="text-align: left" class="el-card3">
                                 <p>age: about {{ a.age }}</p>
@@ -96,11 +91,6 @@
                                 <p>confused: {{ a.confused }}%</p>
                                 <p>angry: {{ a.angry }}%</p>
 
-
-                                <el-tag v-if=a.male size="medium">male</el-tag>
-                                <el-tag v-if=!a.male size="medium">female</el-tag>
-                                <el-tag v-if=a.bearded size="medium">bearded</el-tag>
-                                <el-tag v-if=!a.bearded size="medium">non-bearded</el-tag>
                               </el-card>
                             </div>
                           </el-row>
