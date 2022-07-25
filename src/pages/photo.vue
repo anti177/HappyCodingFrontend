@@ -93,8 +93,7 @@
                             <div class="photo">
                               <el-image
                                 :src="a.img"
-                                style="width: 80px; height: 80px"
-                                :fit="contain"></el-image>
+                                :fit="cover"></el-image>
                             </div>
                             <div class="intro">
                               <el-card style="text-align: left" class="el-card3">
@@ -126,7 +125,7 @@
                 <el-col>
                   <el-button type="primary" @click="dialogVisible2 = true" round>save</el-button>
                   <el-dialog
-                    title="notes"
+                    title="提示"
                     :visible.sync="dialogVisible2"
                     width="50%" :before-close="handleClose" append-to-body>
                     <el-checkbox-group v-model="checkList">
@@ -296,7 +295,7 @@ export default {
     },
     submitUpload(form) {
       this.$refs.upload.submit();
-      this.pictureList = this.fileList;
+      this.pictureList = this.fileList();
       this.fileList = [];
     },
 
