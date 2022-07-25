@@ -38,11 +38,10 @@
                     </div>
                   </div>
                   <el-row>
-
                     <el-form>
                       <el-form-item>
                         <el-upload ref="upload"
-                                   action="http://localhost:8080/api/photo"
+                                   action="http://test-1365858278.us-east-1.elb.amazonaws.com:5233/photo"
                                    multiple
                                    :limit=20
                                    :file-list="fileList"

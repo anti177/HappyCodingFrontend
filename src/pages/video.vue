@@ -36,7 +36,7 @@
                   <el-row>
                     <el-col>
                       <el-upload ref="upload"
-                                 action="http://localhost:8080/api/video"
+                                 action="http://test-1365858278.us-east-1.elb.amazonaws.com:5233/photo"
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
@@ -88,7 +88,6 @@
                                 <p>disgusted: {{ a.disgusted }}%</p>
                                 <p>confused: {{ a.confused }}%</p>
                                 <p>angry: {{ a.angry }}%</p>
-
                               </el-card>
                             </div>
                           </el-row>
