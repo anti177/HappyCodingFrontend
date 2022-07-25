@@ -36,7 +36,7 @@
                   <el-row>
                     <el-col>
                       <el-upload ref="upload"
-                                 action="http://44.204.27.130:8080/api/video"
+                                 action="http://localhost:8080/api/video"
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
@@ -75,9 +75,7 @@
 
                   <div v-for="(a,index) in processedVideoList[0].summary" :key="a">
 
-                    <el-row>
                       <el-card class="box-card">
-                        <div class="golf">
                           <el-row>
                             <div class="intro">
                               <el-card style="text-align: left" class="el-card3">
@@ -94,10 +92,8 @@
                               </el-card>
                             </div>
                           </el-row>
-                        </div>
 
                       </el-card>
-                    </el-row>
                   </div>
 
                 </el-card>
@@ -134,7 +130,9 @@ export default {
       fileList: [],
       processedVideoList: [
         // { url:'http://vjs.zencdn.net/v/oceans.mp4',
-        //   summary:['face:50%','age:20-30'],
+        //   summary:[{
+        //   'age':20
+        //   }],
         //   url2:'/static/pic/test.png',
         //   id:0},
       ],
@@ -216,7 +214,7 @@ export default {
         this.processedVideoList.push(
           {
             url: res.url,
-            summary: ['face:50%', 'age:20-30'],
+            summary: res.summary,
             id: 0
           },
         )
@@ -338,7 +336,7 @@ html, body {
 }
 
 .box-card2 {
-  margin-right: 5%;
+
 
   position: center;
   offset: center;
@@ -369,7 +367,6 @@ img {
 }
 
 .intro {
-  float: right;
   font-size: large;
 }
 

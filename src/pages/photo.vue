@@ -42,7 +42,7 @@
                     <el-form>
                       <el-form-item>
                         <el-upload ref="upload"
-                                   action="http://44.204.27.130:8080/api/photo"
+                                   action="http://localhost:8080/api/photo"
                                    multiple
                                    :limit=20
                                    :file-list="fileList"
