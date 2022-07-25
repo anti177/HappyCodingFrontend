@@ -3,8 +3,8 @@
     <el-container>
       <el-header class="top">
         <el-row>
-          <el-col :span="1" >
-            <el-button @click="goBack"  type="text">back</el-button>
+          <el-col :span="1">
+            <el-button @click="goBack" type="text">back</el-button>
           </el-col>
           <el-col :span="23">
             <p>EMOJI-CAM</p>
@@ -93,7 +93,8 @@
                             <div class="photo">
                               <el-image
                                 :src="a.img"
-                                :fit="cover"></el-image>
+                                :fit="cover" style="width: 80px; height: 80px"
+                              ></el-image>
                             </div>
                             <div class="intro">
                               <el-card style="text-align: left" class="el-card3">
@@ -102,7 +103,7 @@
                                 <p>fear: {{ a.fear }}%</p>
                                 <p>sad: {{ a.sad }}%</p>
                                 <p>calm: {{ a.calm }}%</p>
-                                <p>surprised: {{ a.surprised}}%</p>
+                                <p>surprised: {{ a.surprised }}%</p>
                                 <p>disgusted: {{ a.disgusted }}%</p>
                                 <p>confused: {{ a.confused }}%</p>
                                 <p>angry: {{ a.angry }}%</p>
