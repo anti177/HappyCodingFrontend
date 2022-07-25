@@ -36,7 +36,7 @@
                   <el-row>
                     <el-col>
                       <el-upload ref="upload"
-                                 action="http://test-1365858278.us-east-1.elb.amazonaws.com:5233/photo"
+                                 action="http://test-1365858278.us-east-1.elb.amazonaws.com:5233/video"
                                  :limit=1
                                  :file-list="fileList"
                                  list-type="text"
